@@ -31,11 +31,34 @@
       font-size: 11px;
       display : none;
     }
+    .header {
+      background-color: #D0D0D0;
+    }
+    .compat {
+      font-size: 9px;
+      overflow: hidden;
+      font-family: monospace;
+      color: #000;
+      white-space: pre-wrap;
+      text-align: left;
+    }
+    .family {
+      font-size: 9px;
+      overflow: hidden;
+      font-family: monospace;
+      color: #808080;
+      white-space: pre-wrap;
+      text-align: left;
+    }
+    .family a {
+      color: #808080;
+      text-decoration: none;
+    }
   </style>
   <body>
     <h1>Renesas SH Instruction Set Summary</h1>
     <table id="instructions">
-      <thead>
+      <thead class="header">
 	<th colspan=3>Compatibility</th>
 	<th>Format</th>
 	<th>Abstract</th>
@@ -43,6 +66,21 @@
 	<th>T Bits</br>DC Bits</th>
 	<th colspan=3>Issue cycles</th>
 	<th colspan=3>Latency cycles</th>
+      </thead>
+      <thead class="header">
+	<th colspan=7></th>
+	<th class='family' data-dynatable-column="SH4.issue">SH1</th><th class='family' data-dynatable-column="SH2.issue">SH2</th><th class='family' data-dynatable-column="SH2E.issue">SH2E</th>
+	<th class='family' data-dynatable-column="SH4.issue">SH1</th><th class='family' data-dynatable-column="SH2.issue">SH2</th><th class='family' data-dynatable-column="SH2E.issue">SH2E</th>
+      </thead>
+      <thead class="header">
+	<th colspan=7></th>
+	<th class='family' data-dynatable-column="SH4.issue">SH2A</th><th class='family' data-dynatable-column="SH3.issue">SH3</th><th class='family' data-dynatable-column="SH3E.issue">SH3E</th>
+	<th class='family' data-dynatable-column="SH4.issue">SH2A</th><th class='family' data-dynatable-column="SH3.issue">SH3</th><th class='family' data-dynatable-column="SH3E.issue">SH3E</th>
+      </thead>
+      <thead class="header">
+	<th colspan=7></th>
+	<th class='family' data-dynatable-column="SH4.issue">SH4</th><th class='family' data-dynatable-column="SH4A.issue">SH4A</th><th class='family'></th>
+	<th class='family' data-dynatable-column="SH4.latency">SH4</th><th class='family' data-dynatable-column="SH4A.issue">SH4A</th><th class='family'></th>
       </thead>
       <tbody></tbody>
     </table>
@@ -145,7 +183,7 @@
         ];
 
         return '<tr class="top" id="line0.' + rowIndex + '" onmouseover="on_mouse_over(' + rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);">' +
-	  '<td>' + compat[0] + '</td><td>' + compat[1] + '</td><td>' + compat[2] + '</td>' +
+	  '<td class="compat">' + compat[0] + '</td><td class="compat">' + compat[1] + '</td><td class="compat">' + compat[2] + '</td>' +
 	  '<td rowspan=3>' + record.format + '</td>' +
           '<td rowspan=3>' + record.abstract + '</td>' +
           '<td rowspan=3>' + record.code + '</td>' +
@@ -153,11 +191,11 @@
 	  '<td>' + issue[0] + '</td><td>' + issue[1] + '</td><td>' + issue[2] + '</td><' +
 	  '<td>' + latency[0] + '</td><td>' + latency[1] + '</td><td>' + latency[2] + '</td></tr>' +
           '<tr id="line1.' + rowIndex + '" onmouseover="on_mouse_over(' + rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);">' +
-	    '<td>' + compat[3] + '</td><td>' + compat[4] + '</td><td>' + compat[5] + '</td>' +
+	    '<td class="compat">' + compat[3] + '</td><td class="compat">' + compat[4] + '</td><td class="compat">' + compat[5] + '</td>' +
 	    '<td>' + issue[3] + '</td><td>' + issue[4] + '</td><td>' + issue[5] + '</td>' +
 	    '<td>' + latency[3] + '</td><td>' + latency[4] + '</td><td>' + latency[5] + '</td>' +
           '</tr><tr id="line2.' + rowIndex + '" onmouseover="on_mouse_over(' + rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);">' +
-            '<td>' + compat[6] + '</td><td>' + compat[7] + '</td><td></td>' +
+            '<td class="compat">' + compat[6] + '</td><td class="compat">' + compat[7] + '</td><td class="compat"></td>' +
             '<td>' + issue[6] + '</td><td>' + issue[7] + '</td><td></td>' +
             '<td>' + latency[6] + '</td><td>' + latency[7] + '</td><td></td>' +
           '</tr>' +
