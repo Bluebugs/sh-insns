@@ -54,6 +54,11 @@
       color: #808080;
       text-decoration: none;
     }
+    pre.code
+    {
+      font-size: 11px;
+      font-family: monospace;
+    }
   </style>
   <body>
     <h1>Renesas SH Instruction Set Summary</h1>
@@ -199,8 +204,8 @@
             '<td>' + issue[6] + '</td><td>' + issue[7] + '</td><td></td>' +
             '<td>' + latency[6] + '</td><td>' + latency[7] + '</td><td></td>' +
           '</tr>' +
-	  '<tr class="collapse" id="description' + rowIndex + '" onmouseover="on_mouse_over(' + rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);"><td colspan=13><pre>' + record.description + '</pre></td></tr>' +
-	  '<tr class="collapse" id="operation' + rowIndex + '" onmouseover="on_mouse_over(' + rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);"><td colspan=13><pre>' + record.operation + '</pre></td></tr>';
+	  '<tr class="collapse" id="description' + rowIndex + '" onmouseover="on_mouse_over(' + rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);"><td colspan=13><i><b>Description</i></b><br/><pre>' + record.description + '</pre></td></tr>' +
+	  '<tr class="collapse" id="operation' + rowIndex + '" onmouseover="on_mouse_over(' + rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);"><td colspan=13><i><b>Operation</i></b><pre class="code">' + record.operation + '</pre></td></tr>';
       }
 
       $.getJSON("insns.json",
