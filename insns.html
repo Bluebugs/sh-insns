@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SuperH family instructions set</title>
+
+    <script type='text/javascript' src='https://s3.amazonaws.com/dynatable-docs-assets/js/jquery-1.9.1.min.js'></script>
+    <script type='text/javascript' src='https://s3.amazonaws.com/dynatable-docs-assets/js/jquery.scrollTo.js'></script>
+    <script type='text/javascript' src='https://s3.amazonaws.com/dynatable-docs-assets/js/jquery.toc.min.js'></script>
+    <script type='text/javascript' src='https://s3.amazonaws.com/dynatable-docs-assets/js/jquery.sharrre-1.2.0.min.js'></script>
+
+    <script type='text/javascript' src='https://s3.amazonaws.com/dynatable-docs-assets/js/jquery.dynatable.js'></script>
+  </head>
+  <style type="text/css">
+    body {
+      font-size: 13px;
+      background-color: white;
+    }
+    * {
+      padding: 3px;
+      border: none;
+      border-collapse: collapse;
+      border-spacing: 0px;
+    }
+    .top {
+      border-top-width: 1px;
+      border-top-style: dotted;
+    }
+    .collapse {
+      font-family: monospace;
+      white-space: pre-wrap;
+      font-size: 11px;
+      display : none;
+    }
+  </style>
+  <body>
+    <h1>Renesas SH Instruction Set Summary</h1>
+    <table id="instructions">
+      <thead>
+	<th colspan=3>Compatibility</th>
+	<th>Format</th>
+	<th>Abstract</th>
+	<th>Code</th>
+	<th>T Bits</br>DC Bits</th>
+	<th colspan=3>Issue cycles</th>
+	<th colspan=3>Latency cycles</th>
+      </thead>
+      <tbody></tbody>
+    </table>
+    
+    <script type="text/javascript">
+      var cur_opened = null;
+
+      function on_mouse_click (rowIndex, event)
+      {
+        if (event.defaultPrevented === true)
+          return;
+
+        var ed = document.getElementById('description' + rowIndex);
+        var eo = document.getElementById('operation' + rowIndex);
+        var s = window.getSelection ();
+
+        if (!s.isCollapsed)
+          return;
+
+        if (ed.style.display == 'table-row')
+        {
+          ed.style.display = 'none';
+          eo.style.display = 'none';      
+          cur_opened = null;
+        }
+        else
+        {
+          ed.style.display = 'table-row';
+          eo.style.display = 'table-row';
+      
+          if (cur_opened != null)
+          {
+            cur_opened[0].style.display = 'none';
+            cur_opened[1].style.display = 'none';
+          }
+          cur_opened = [ ed, eo ];
+        }
+      }
+
+      function on_mouse_over (rowIndex)
+      {
+        var d, o;
+
+        document.getElementById('line0.' + rowIndex).style.backgroundColor = "#F0F0F0";
+        document.getElementById('line1.' + rowIndex).style.backgroundColor = "#F0F0F0";
+        document.getElementById('line2.' + rowIndex).style.backgroundColor = "#F0F0F0";
+
+        d = document.getElementById('description' + rowIndex);
+        if (d) d.style.backgroundColor = "#F0F0F0";
+
+        o = document.getElementById('operation' + rowIndex);
+        if (o) o.style.backgroundColor = "#F0F0F0";
+      }
+
+      function on_mouse_out (rowIndex)
+      {
+        var d, o;
+
+        document.getElementById('line0.' + rowIndex).style.backgroundColor = "";
+        document.getElementById('line1.' + rowIndex).style.backgroundColor = "";
+        document.getElementById('line2.' + rowIndex).style.backgroundColor = "";
+
+        d = document.getElementById('description' + rowIndex);
+        if (d) d.style.backgroundColor = "";
+
+        o = document.getElementById('operation' + rowIndex);
+        if (o) o.style.backgroundColor = "";
+      }
+      
+      function Writer(rowIndex, record, columns, cellWriter) {
+        var compat = [
+          record.SH1 ? 'SH1' : '-',
+          record.SH2 ? 'SH2' : '-',
+          record.SH2E ? 'SH2E' : '-',
+          record.SH2A ? 'SH2A' : '-',
+          record.SH3 ? 'SH3' : '-',
+          record.SH3E ? 'SH3E' : '-',
+          record.SH4 ? 'SH4' : '-',
+          record.SH4A ? 'SH4A' : '-'
+        ];
+        var issue = [
+          record.SH1 ? record["SH1.issue"] : '-',
+          record.SH2 ? record["SH2.issue"] : '-',
+          record.SH2E ? record["SH2E.issue"] : '-',
+          record.SH2A ? record["SH2A.issue"] : '-',
+          record.SH3 ? record["SH3.issue"] : '-',
+          record.SH3E ? record["SH3E.issue"] : '-',
+          record.SH4 ? record["SH4.issue"] : '-',
+          record.SH4A ? record["SH4A.issue"] : '-'
+        ];
+        var latency = [
+          record.SH1 ? record["SH1.latency"] : '-',
+          record.SH2 ? record["SH2.latency"] : '-',
+          record.SH2E ? record["SH2E.latency"] : '-',
+          record.SH2A ? record["SH2A.latency"] : '-',
+          record.SH3 ? record["SH3.latency"] : '-',
+          record.SH3E ? record["SH3E.latency"] : '-',
+          record.SH4 ? record["SH4.latency"] : '-',
+          record.SH4A ? record["SH4A.latency"] : '-'
+        ];
+
+        return '<tr class="top" id="line0.' + rowIndex + '" onmouseover="on_mouse_over(' + rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);">' +
+	  '<td>' + compat[0] + '</td><td>' + compat[1] + '</td><td>' + compat[2] + '</td>' +
+	  '<td rowspan=3>' + record.format + '</td>' +
+          '<td rowspan=3>' + record.abstract + '</td>' +
+          '<td rowspan=3>' + record.code + '</td>' +
+          '<td rowspan=3>' + record.T + '</td>' +
+	  '<td>' + issue[0] + '</td><td>' + issue[1] + '</td><td>' + issue[2] + '</td><' +
+	  '<td>' + latency[0] + '</td><td>' + latency[1] + '</td><td>' + latency[2] + '</td></tr>' +
+          '<tr id="line1.' + rowIndex + '" onmouseover="on_mouse_over(' + rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);">' +
+	    '<td>' + compat[3] + '</td><td>' + compat[4] + '</td><td>' + compat[5] + '</td>' +
+	    '<td>' + issue[3] + '</td><td>' + issue[4] + '</td><td>' + issue[5] + '</td>' +
+	    '<td>' + latency[3] + '</td><td>' + latency[4] + '</td><td>' + latency[5] + '</td>' +
+          '</tr><tr id="line2.' + rowIndex + '" onmouseover="on_mouse_over(' + rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);">' +
+            '<td>' + compat[6] + '</td><td>' + compat[7] + '</td><td></td>' +
+            '<td>' + issue[6] + '</td><td>' + issue[7] + '</td><td></td>' +
+            '<td>' + latency[6] + '</td><td>' + latency[7] + '</td><td></td>' +
+          '</tr>' +
+	  '<tr class="collapse" id="description' + rowIndex + '" onmouseover="on_mouse_over(' + rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);"><td colspan=13><pre>' + record.description + '</pre></td></tr>' +
+	  '<tr class="collapse" id="operation' + rowIndex + '" onmouseover="on_mouse_over(' + rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);"><td colspan=13><pre>' + record.operation + '</pre></td></tr>';
+      }
+
+      $.getJSON("insns.json",
+        function(data) {
+          $('#instructions').dynatable({
+            features: {
+              paginate: false,
+              recordCount: false,
+            },
+            writers: {
+              _rowWriter: Writer
+            },
+            dataset: {
+              records: data.instructions
+            }
+          });
+        }
+      );
+
+      
+    </script>
+  </body>
+</html>
