@@ -114,6 +114,7 @@
             <option>SH3E</option>
             <option>SH4</option>
             <option>SH4A</option>
+	    <option>J-Core</option>
           </select>
 	</div>
 	<div class="search">Search :
@@ -144,6 +145,11 @@
 	  <th colspan=7></th>
 	  <th class='family' data-dynatable-column="SH4.issue">SH4</th><th class='family' data-dynatable-column="SH4A.issue">SH4A</th><th class='family'></th>
 	  <th class='family' data-dynatable-column="SH4.latency">SH4</th><th class='family' data-dynatable-column="SH4A.issue">SH4A</th><th class='family'></th>
+	</thead>
+	<thead class="header">
+	  <th colspan=7></th>
+	  <th class='family' data-dynatable-column="JC.issue">JC</th><th class='family'></th><th class='family'></th>
+	  <th class='family' data-dynatable-column="JC.latency">JC</th><th class='family'></th><th class='family'></th>
 	</thead>
 	<tbody></tbody>
       </table>
@@ -191,6 +197,7 @@
         document.getElementById('line0.' + rowIndex).style.backgroundColor = "#F0F0F0";
         document.getElementById('line1.' + rowIndex).style.backgroundColor = "#F0F0F0";
         document.getElementById('line2.' + rowIndex).style.backgroundColor = "#F0F0F0";
+        document.getElementById('line3.' + rowIndex).style.backgroundColor = "#F0F0F0";
 
         d = document.getElementById('description' + rowIndex);
         if (d) d.style.backgroundColor = "#F0F0F0";
@@ -206,6 +213,7 @@
         document.getElementById('line0.' + rowIndex).style.backgroundColor = "";
         document.getElementById('line1.' + rowIndex).style.backgroundColor = "";
         document.getElementById('line2.' + rowIndex).style.backgroundColor = "";
+        document.getElementById('line3.' + rowIndex).style.backgroundColor = "";
 
         d = document.getElementById('description' + rowIndex);
         if (d) d.style.backgroundColor = "";
@@ -223,7 +231,8 @@
           record.SH3 ? 'SH3' : '-',
           record.SH3E ? 'SH3E' : '-',
           record.SH4 ? 'SH4' : '-',
-          record.SH4A ? 'SH4A' : '-'
+          record.SH4A ? 'SH4A' : '-',
+          record.JC ? 'JC' : '-'
         ];
         var issue = [
           record.SH1 ? record["SH1.issue"] : '-',
@@ -233,7 +242,8 @@
           record.SH3 ? record["SH3.issue"] : '-',
           record.SH3E ? record["SH3E.issue"] : '-',
           record.SH4 ? record["SH4.issue"] : '-',
-          record.SH4A ? record["SH4A.issue"] : '-'
+          record.SH4A ? record["SH4A.issue"] : '-',
+          record.JC ? record["JC.issue"] : '-'
         ];
         var latency = [
           record.SH1 ? record["SH1.latency"] : '-',
@@ -243,15 +253,16 @@
           record.SH3 ? record["SH3.latency"] : '-',
           record.SH3E ? record["SH3E.latency"] : '-',
           record.SH4 ? record["SH4.latency"] : '-',
-          record.SH4A ? record["SH4A.latency"] : '-'
+          record.SH4A ? record["SH4A.latency"] : '-',
+          record.JC ? record["JC.latency"] : '-'
         ];
 
         return '<tr class="top" id="line0.' + rowIndex + '" onmouseover="on_mouse_over(' + rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);">' +
 	  '<td class="compat">' + compat[0] + '</td><td class="compat">' + compat[1] + '</td><td class="compat">' + compat[2] + '</td>' +
-	  '<td rowspan=3>' + record.format + '</td>' +
-          '<td rowspan=3>' + record.abstract + '</td>' +
-          '<td rowspan=3>' + record.code + '</td>' +
-          '<td rowspan=3>' + record.T + '</td>' +
+	  '<td rowspan=4>' + record.format + '</td>' +
+          '<td rowspan=4>' + record.abstract + '</td>' +
+          '<td rowspan=4>' + record.code + '</td>' +
+          '<td rowspan=4>' + record.T + '</td>' +
 	  '<td>' + issue[0] + '</td><td>' + issue[1] + '</td><td>' + issue[2] + '</td><' +
 	  '<td>' + latency[0] + '</td><td>' + latency[1] + '</td><td>' + latency[2] + '</td></tr>' +
           '<tr id="line1.' + rowIndex + '" onmouseover="on_mouse_over(' + rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);">' +
@@ -262,6 +273,10 @@
             '<td class="compat">' + compat[6] + '</td><td class="compat">' + compat[7] + '</td><td class="compat"></td>' +
             '<td>' + issue[6] + '</td><td>' + issue[7] + '</td><td></td>' +
             '<td>' + latency[6] + '</td><td>' + latency[7] + '</td><td></td>' +
+          '</tr><tr id="line3.' + rowIndex + '" onmouseover="on_mouse_over(' + rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);">' +
+            '<td class="compat">' + compat[8] + '</td><td class="compat">' + '</td><td class="compat"></td>' +
+            '<td>' + issue[8] + '</td><td>' + '</td><td></td>' +
+            '<td>' + latency[8] + '</td><td>' + '</td><td></td>' +
           '</tr>' +
 	  '<tr class="collapse" id="description' + rowIndex + '" onmouseover="on_mouse_over(' + rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);"><td colspan=13><i><b>Description</i></b><br/><pre>' + record.description + '</pre></td></tr>' +
 	  '<tr class="collapse" id="operation' + rowIndex + '" onmouseover="on_mouse_over(' + rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);"><td colspan=13><i><b>Operation</i></b><pre class="code">' + record.operation + '</pre></td></tr>';
@@ -272,7 +287,8 @@
         $('#instructions')
           .bind('dynatable:init', function(e, dynatable) {
             dynatable.queries.functions['family'] = function(record, queryValue) {
-	      if (queryValue === '*') return true;
+              if (queryValue === '*') return true;
+              if (queryValue === 'J-Core') return record.JC;
               return record[queryValue] === true;
             };
             dynatable.queries.functions['search'] = function(record, queryValue) {
