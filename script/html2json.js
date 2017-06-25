@@ -1,8 +1,21 @@
 const htmlToJson = require('html-to-json')
 const fs = require('fs');
 
+var last_group = "";
+
 var promise = htmlToJson.request({ uri: 'http://www.shared-ptr.com/sh_insns.html' },
 				 { 'instructions' : ['.col_cont', {
+				     'group': function($instr) {
+					 let b = $instr.prev().prev().prev();
+					 let div = $instr.prev();
+					 let ret = "";
+
+					 if (div.text().length > 0) ret = last_group;
+					 else if (b.text()) ret = b.text();
+
+					 last_group = ret;
+					 return ret;
+				     },
 				     'SH1': function($instr) {
 					 return $instr.find(".col_cont_1").text().indexOf('SH1') !== -1 ? true : false ;
 				     },
