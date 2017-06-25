@@ -114,7 +114,8 @@
             <option>SH3E</option>
             <option>SH4</option>
             <option>SH4A</option>
-	    <option>J-Core</option>
+            <option>DSP</option>
+            <option>J-Core</option>
           </select>
 	</div>
 	<div class="search">Search :
@@ -143,8 +144,8 @@
 	</thead>
 	<thead class="header">
 	  <th colspan=7></th>
-	  <th class='family' data-dynatable-column="SH4.issue">SH4</th><th class='family' data-dynatable-column="SH4A.issue">SH4A</th><th class='family'></th>
-	  <th class='family' data-dynatable-column="SH4.latency">SH4</th><th class='family' data-dynatable-column="SH4A.issue">SH4A</th><th class='family'></th>
+	  <th class='family' data-dynatable-column="SH4.issue">SH4</th><th class='family' data-dynatable-column="SH4A.issue">SH4A</th><th class='family' data-dynatable-column="DSP.issue">DSP</th>
+	  <th class='family' data-dynatable-column="SH4.latency">SH4</th><th class='family' data-dynatable-column="SH4A.latency">SH4A</th><th class='family' data-dynatable-column="DSP.lantency">DSP</th>
 	</thead>
 	<thead class="header">
 	  <th colspan=7></th>
@@ -233,6 +234,7 @@
           record.SH3E ? 'SH3E' : '-',
           record.SH4 ? 'SH4' : '-',
           record.SH4A ? 'SH4A' : '-',
+          record.DSP ? 'DSP' : '-',
           record.JC ? 'JC' : '-'
         ];
         var issue = [
@@ -244,6 +246,7 @@
           record.SH3E ? record["SH3E.issue"] : '-',
           record.SH4 ? record["SH4.issue"] : '-',
           record.SH4A ? record["SH4A.issue"] : '-',
+          record.DSP ? record["DSP.issue"] : '-',
           record.JC ? record["JC.issue"] : '-'
         ];
         var latency = [
@@ -255,6 +258,7 @@
           record.SH3E ? record["SH3E.latency"] : '-',
           record.SH4 ? record["SH4.latency"] : '-',
           record.SH4A ? record["SH4A.latency"] : '-',
+          record.DSP ? record["DSP.latency"] : '-',
           record.JC ? record["JC.latency"] : '-'
         ];
         var group_start = "";
@@ -277,13 +281,13 @@
 	    '<td>' + issue[3] + '</td><td>' + issue[4] + '</td><td>' + issue[5] + '</td>' +
 	    '<td>' + latency[3] + '</td><td>' + latency[4] + '</td><td>' + latency[5] + '</td>' +
           '</tr><tr id="line2.' + rowIndex + '" onmouseover="on_mouse_over(' + rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);">' +
-            '<td class="compat">' + compat[6] + '</td><td class="compat">' + compat[7] + '</td><td class="compat"></td>' +
-            '<td>' + issue[6] + '</td><td>' + issue[7] + '</td><td></td>' +
-            '<td>' + latency[6] + '</td><td>' + latency[7] + '</td><td></td>' +
+            '<td class="compat">' + compat[6] + '</td><td class="compat">' + compat[7] + '</td><td class="compat">' + compat[8] + '</td>' +
+            '<td>' + issue[6] + '</td><td>' + issue[7] + '</td><td>' + issue[8] + '</td>' +
+            '<td>' + latency[6] + '</td><td>' + latency[7] + '</td><td>' + latency[8] + '</td>' +
           '</tr><tr id="line3.' + rowIndex + '" onmouseover="on_mouse_over(' + rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);">' +
-            '<td class="compat">' + compat[8] + '</td><td class="compat">' + '</td><td class="compat"></td>' +
-            '<td>' + issue[8] + '</td><td>' + '</td><td></td>' +
-            '<td>' + latency[8] + '</td><td>' + '</td><td></td>' +
+            '<td class="compat">' + compat[9] + '</td><td class="compat">' + '</td><td class="compat"></td>' +
+            '<td>' + issue[9] + '</td><td>' + '</td><td></td>' +
+            '<td>' + latency[9] + '</td><td>' + '</td><td></td>' +
           '</tr>' +
 	  '<tr class="collapse" id="description' + rowIndex + '" onmouseover="on_mouse_over(' + rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);"><td colspan=13><i><b>Description</i></b><br/><pre>' + record.description + '</pre></td></tr>' +
 	  '<tr class="collapse" id="operation' + rowIndex + '" onmouseover="on_mouse_over(' + rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);"><td colspan=13><i><b>Operation</i></b><pre class="code">' + record.operation + '</pre></td></tr>';
