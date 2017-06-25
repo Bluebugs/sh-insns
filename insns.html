@@ -282,6 +282,9 @@
 	  '<tr class="collapse" id="operation' + rowIndex + '" onmouseover="on_mouse_over(' + rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);"><td colspan=13><i><b>Operation</i></b><pre class="code">' + record.operation + '</pre></td></tr>';
       }
 
+      var last_query = "";
+      var last_rex = null;
+
       $.getJSON("insns.json",
         function(data) {
         $('#instructions')
@@ -292,9 +295,16 @@
               return record[queryValue] === true;
             };
             dynatable.queries.functions['search'] = function(record, queryValue) {
-console.log('searching for ' + queryValue);
+              console.log('searching for ' + queryValue);
+	      if (queryValue.length == 0) return true;
 
-              var rex = new RegExp(queryValue);
+              if (queryValue != last_query)
+              {
+                 last_query = queryValue;
+                 last_rex = new RegExp(queryValue);
+              }
+
+              var rex = last_rex;
               if (rex.test(record.format)) return true;
               if (rex.test(record.abstract)) return true;
               if (rex.test(record.code)) return true;
