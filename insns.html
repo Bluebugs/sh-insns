@@ -221,7 +221,8 @@
         o = document.getElementById('operation' + rowIndex);
         if (o) o.style.backgroundColor = "";
       }
-      
+
+      var last_group = "";
       function Writer(rowIndex, record, columns, cellWriter) {
         var compat = [
           record.SH1 ? 'SH1' : '-',
@@ -256,8 +257,14 @@
           record.SH4A ? record["SH4A.latency"] : '-',
           record.JC ? record["JC.latency"] : '-'
         ];
+        var group_start = "";
+        if (record.group != last_group)
+        {
+          last_group = record.group;
+          group_start = "<tr><td colspan=13><br/><b>" + record.group + "</b><br/></td></tr>";
+        }
 
-        return '<tr class="top" id="line0.' + rowIndex + '" onmouseover="on_mouse_over(' + rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);">' +
+        return group_start + '<tr class="top" id="line0.' + rowIndex + '" onmouseover="on_mouse_over(' + rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);">' +
 	  '<td class="compat">' + compat[0] + '</td><td class="compat">' + compat[1] + '</td><td class="compat">' + compat[2] + '</td>' +
 	  '<td rowspan=4>' + record.format + '</td>' +
           '<td rowspan=4>' + record.abstract + '</td>' +
@@ -310,6 +317,7 @@
               if (rex.test(record.code)) return true;
               if (rex.test(record.description)) return true;
               if (rex.test(record.operation)) return true;
+              if (rex.test(record.group)) return true;
 
               return false;
             };
