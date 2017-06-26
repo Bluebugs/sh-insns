@@ -26,8 +26,11 @@
     #filter-family {
       order: 1;
     }
-    .search {
+    #insns-group {
       order: 2;
+    }
+    .search {
+      order: 3;
     }
     .vertical {
       display: flex;
@@ -117,6 +120,29 @@
             <option>DSP</option>
             <option>J-Core</option>
           </select>
+	</div>
+	<div id="insns-group">Instructions group :
+	  <select id="group" name="group">
+            <option>*</option>
+            <option>Data Transfer Instructions</option>
+            <option>Bit Manipulation Instructions</option>
+            <option>Arithmetic Operation Instructions</option>
+            <option>Logic Operation Instructions</option>
+            <option>Shift Instructions</option>
+            <option>Branch Instructions</option>
+            <option>System Control Instructions</option>
+            <option>32 Bit Floating-Point Data Transfer Instructions (FPSCR.SZ = 0)</option>
+            <option>64 Bit Floating-Point Data Transfer Instructions (FPSCR.SZ = 1)</option>
+            <option>Floating-Point Single-Precision Instructions (FPSCR.PR = 0)</option>
+            <option>Floating-Point Double-Precision Instructions (FPSCR.PR = 1)</option>
+            <option>Floating-Point Control Instructions</option>
+            <option>DSP Data Transfer Instructions</option>
+            <option>DSP ALU Arithmetic Operation Instructions</option>
+            <option>DSP ALU Logical Operation Instructions</option>
+            <option>DSP Fixed Decimal Point Multiplication Instructions</option>
+            <option>DSP Shift Operation Instructions</option>
+            <option>DSP System Control Instructions</option>
+	  </select>
 	</div>
 	<div class="search">Search :
 	  <input type="search" id="search">
@@ -305,6 +331,10 @@
               if (queryValue === 'J-Core') return record.JC;
               return record[queryValue] === true;
             };
+            dynatable.queries.functions['group'] = function(record, queryValue) {
+              if (queryValue === '*') return true;
+              return record.group === queryValue;
+            };
             dynatable.queries.functions['search'] = function(record, queryValue) {
               console.log('searching for ' + queryValue);
 	      if (queryValue.length == 0) return true;
@@ -338,7 +368,7 @@
               records: data.instructions
             },
             inputs: {
-              queries: $('#family, #search')
+              queries: $('#family, #search, #group')
             }
           });
         });
