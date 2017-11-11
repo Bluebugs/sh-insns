@@ -7402,7 +7402,7 @@
       "DSP.latency": 0,
       "format": "ldc\tRm,DBR",
       "abstract": "Rm -> DBR",
-      "code": "0100mmmm11110110",
+      "code": "0100mmmm11111010",
       "T": "-",
       "description": "Stores a source operand in control register DBR.<br /><br /><br />",
       "operation": "void LDCDBR (int m)\n{\n  DBR = R[m];\n  PC += 2;\n}\n",
