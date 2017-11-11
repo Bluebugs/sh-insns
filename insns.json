@@ -8806,7 +8806,7 @@
       "DSP.latency": 0,
       "format": "sets",
       "abstract": "1 -> T",
-      "code": "0000000000011000",
+      "code": "0000000001011000",
       "T": "-",
       "description": "Sets the S bit to 1.<br /><br /><br />",
       "operation": "void SETS (void)\n{\n  S = 1;\n  PC += 2;\n}\n",
