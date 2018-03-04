@@ -40,7 +40,7 @@ insns.instructions.forEach(function (insn) {
     features = addFeature(features, insn, 'SH3E');
     features = addFeature(features, insn, 'SH4');
     features = addFeature(features, insn, 'SH4A');
-    features = addFeature(features, insn, 'JC');
+    features = addFeature(features, insn, 'J32');
 
     if (features == '') return ;
 

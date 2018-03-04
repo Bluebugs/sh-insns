@@ -175,8 +175,8 @@
 	</thead>
 	<thead class="header">
 	  <th colspan=7></th>
-	  <th class='family' data-dynatable-column="JC.issue">JC</th><th class='family'></th><th class='family'></th>
-	  <th class='family' data-dynatable-column="JC.latency">JC</th><th class='family'></th><th class='family'></th>
+	  <th class='family' data-dynatable-column="J32.issue">J32</th><th class='family'></th><th class='family'></th>
+	  <th class='family' data-dynatable-column="J32.latency">J32</th><th class='family'></th><th class='family'></th>
 	</thead>
 	<tbody></tbody>
       </table>
@@ -261,7 +261,7 @@
           record.SH4 ? 'SH4' : '-',
           record.SH4A ? 'SH4A' : '-',
           record.DSP ? 'DSP' : '-',
-          record.JC ? 'JC' : '-'
+          record.J32 ? 'J32' : '-'
         ];
         var issue = [
           record.SH1 ? record["SH1.issue"] : '-',
@@ -273,7 +273,7 @@
           record.SH4 ? record["SH4.issue"] : '-',
           record.SH4A ? record["SH4A.issue"] : '-',
           record.DSP ? record["DSP.issue"] : '-',
-          record.JC ? record["JC.issue"] : '-'
+          record.J32 ? record["J32.issue"] : '-'
         ];
         var latency = [
           record.SH1 ? record["SH1.latency"] : '-',
@@ -285,7 +285,7 @@
           record.SH4 ? record["SH4.latency"] : '-',
           record.SH4A ? record["SH4A.latency"] : '-',
           record.DSP ? record["DSP.latency"] : '-',
-          record.JC ? record["JC.latency"] : '-'
+          record.J32 ? record["J32.latency"] : '-'
         ];
         var group_start = "";
         if (record.group != last_group)
@@ -328,7 +328,7 @@
           .bind('dynatable:init', function(e, dynatable) {
             dynatable.queries.functions['family'] = function(record, queryValue) {
               if (queryValue === '*') return true;
-              if (queryValue === 'J-Core') return record.JC;
+              if (queryValue === 'J-Core') return record.J32;
               return record[queryValue] === true;
             };
             dynatable.queries.functions['group'] = function(record, queryValue) {
