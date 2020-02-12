@@ -190,6 +190,7 @@
         if (event.defaultPrevented === true)
           return;
 
+        var eh = document.getElementById('hex' + rowIndex);
         var ed = document.getElementById('description' + rowIndex);
         var eo = document.getElementById('operation' + rowIndex);
         var s = window.getSelection ();
@@ -199,32 +200,38 @@
 
         if (ed.style.display == 'table-row')
         {
+          if (eh) eh.style.display = 'none';
           ed.style.display = 'none';
           eo.style.display = 'none';      
           cur_opened = null;
         }
         else
         {
+          if (eh) eh.style.display = 'table-row';
           ed.style.display = 'table-row';
           eo.style.display = 'table-row';
       
           if (cur_opened != null)
           {
-            cur_opened[0].style.display = 'none';
+            if (cur_opened[0]) cur_opened[0].style.display = 'none';
             cur_opened[1].style.display = 'none';
+            cur_opened[2].style.display = 'none';
           }
-          cur_opened = [ ed, eo ];
+          cur_opened = [ eh, ed, eo ];
         }
       }
 
       function on_mouse_over (rowIndex)
       {
-        var d, o;
+        var h, d, o;
 
         document.getElementById('line0.' + rowIndex).style.backgroundColor = "#F0F0F0";
         document.getElementById('line1.' + rowIndex).style.backgroundColor = "#F0F0F0";
         document.getElementById('line2.' + rowIndex).style.backgroundColor = "#F0F0F0";
         document.getElementById('line3.' + rowIndex).style.backgroundColor = "#F0F0F0";
+
+        h = document.getElementById('hex' + rowIndex);
+        if (h) h.style.backgroundColor = "#F0F0F0";
 
         d = document.getElementById('description' + rowIndex);
         if (d) d.style.backgroundColor = "#F0F0F0";
@@ -235,18 +242,72 @@
 
       function on_mouse_out (rowIndex)
       {
-        var d, o;
+        var h, d, o;
 
         document.getElementById('line0.' + rowIndex).style.backgroundColor = "";
         document.getElementById('line1.' + rowIndex).style.backgroundColor = "";
         document.getElementById('line2.' + rowIndex).style.backgroundColor = "";
         document.getElementById('line3.' + rowIndex).style.backgroundColor = "";
 
+        h = document.getElementById('hex' + rowIndex);
+        if (h) h.style.backgroundColor = "";
+
         d = document.getElementById('description' + rowIndex);
         if (d) d.style.backgroundColor = "";
 
         o = document.getElementById('operation' + rowIndex);
         if (o) o.style.backgroundColor = "";
+      }
+
+      function extract_4c (code)
+      {
+	  half_bytes = [];
+
+	  code = code.replace(' ', '');
+
+	  for (var i = 0, length = code.length; i < length; i += 4) {
+	      half_bytes.push(code.substring(i, i + 4));
+	  }
+
+	  return half_bytes;
+      }
+
+      var ConvertBase = function (num) {
+          return {
+              from : function (baseFrom) {
+                  return {
+                      to : function (baseTo) {
+                          return parseInt(num, baseFrom).toString(baseTo);
+                      }
+                  };
+              }
+          };
+      };
+
+      function binary2hex (code)
+      {
+	  const half_bytes = extract_4c(code);
+	  hex = [];
+
+	  for (const half_byte of half_bytes) {
+	      if (/^[01]+$/.test(half_byte)) {
+		  hex.push(ConvertBase(half_byte).from(2).to(16));
+	      } else if (half_byte === 'nnnn') {
+		  hex.push('n');
+	      } else if (half_byte === 'mmmm') {
+		  hex.push('m');
+	      } else if (half_byte === 'iiii') {
+		  hex.push('i');
+	      } else if (half_byte === 'dddd') {
+		  hex.push('d');
+	      } else {
+		  return null;
+	      }
+	  }
+
+	  const half_word = extract_4c(hex.join("").toUpperCase());
+
+	  return half_word.join(" ");
       }
 
       var last_group = "";
@@ -294,6 +355,13 @@
           group_start = "<tr><td colspan=13><br/><b>" + record.group + "</b><br/></td></tr>";
         }
 
+        var hex = binary2hex(record.code);
+        if (hex) {
+	    hexCode = '<tr class="collapse" id="hex' + rowIndex + '" onmouseover="on_mouse_over('+ rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);"><td colspan=13><i><b>Short hexadecimal instruction code:</i></b>&nbsp;' + hex + '</td></tr>';
+	} else {
+	    hexcode = '';
+	}
+
         return group_start + '<tr class="top" id="line0.' + rowIndex + '" onmouseover="on_mouse_over(' + rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);">' +
 	  '<td class="compat">' + compat[0] + '</td><td class="compat">' + compat[1] + '</td><td class="compat">' + compat[2] + '</td>' +
 	  '<td rowspan=4>' + record.format + '</td>' +
@@ -314,7 +382,7 @@
             '<td class="compat">' + compat[9] + '</td><td class="compat">' + '</td><td class="compat"></td>' +
             '<td>' + issue[9] + '</td><td>' + '</td><td></td>' +
             '<td>' + latency[9] + '</td><td>' + '</td><td></td>' +
-          '</tr>' +
+          '</tr>' + hexCode +
 	  '<tr class="collapse" id="description' + rowIndex + '" onmouseover="on_mouse_over(' + rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);"><td colspan=13><i><b>Description</i></b><br/><pre>' + record.description + '</pre></td></tr>' +
 	  '<tr class="collapse" id="operation' + rowIndex + '" onmouseover="on_mouse_over(' + rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);"><td colspan=13><i><b>Operation</i></b><pre class="code">' + record.operation + '</pre></td></tr>';
       }
