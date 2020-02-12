@@ -144,7 +144,7 @@
             <option>DSP System Control Instructions</option>
 	  </select>
 	</div>
-	<div class="search">Search :
+	<div class="search">Matching regexp :
 	  <input type="search" id="search">
 	</div>
       </div>
@@ -355,9 +355,9 @@
           group_start = "<tr><td colspan=13><br/><b>" + record.group + "</b><br/></td></tr>";
         }
 
-        var hex = binary2hex(record.code);
-        if (hex) {
-	    hexCode = '<tr class="collapse" id="hex' + rowIndex + '" onmouseover="on_mouse_over('+ rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);"><td colspan=13><i><b>Short hexadecimal instruction code:</i></b>&nbsp;' + hex + '</td></tr>';
+        record.hex = binary2hex(record.code);
+        if (record.hex) {
+	    hexCode = '<tr class="collapse" id="hex' + rowIndex + '" onmouseover="on_mouse_over('+ rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);"><td colspan=13><i><b>Short hexadecimal instruction code:</i></b>&nbsp;' + record.hex + '</td></tr>';
 	} else {
 	    hexcode = '';
 	}
@@ -420,6 +420,7 @@
               if (rex.test(record.description)) return true;
               if (rex.test(record.operation)) return true;
               if (rex.test(record.group)) return true;
+              if (rex.test(record.hex)) return true;
 
               return false;
             };
