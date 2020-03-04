@@ -24,13 +24,16 @@
       width: 60%;
     }
     #filter-family {
-      order: 1;
-    }
-    #insns-group {
       order: 2;
     }
-    .search {
+    #insns-group {
       order: 3;
+    }
+    .search {
+      order: 4;
+    }
+    .remember {
+      order: 1;
     }
     .vertical {
       display: flex;
@@ -104,8 +107,42 @@
   <body>
     <h1>Renesas SH Instruction Set Summary</h1>
 
+    <script type="text/javascript">
+      var local_storage = false;
+      if (typeof(Storage) !== "undefined") {
+	  local_storage = true;
+	  console.log("We do have storage.\n");
+
+	  var remember = JSON.parse(window.localStorage.getItem('remember'));
+	  if (remember === null) {
+	      remember = new Object();
+	  }
+      } else {
+	  console.log("we don't have storage :-(\n");
+      }
+
+      var itr = 0;
+      function update_remember()
+      {
+	  if (document.getElementById('chk_remember').checked)
+	  {
+	      $('#remember').val(true);
+	  } else {
+	      $('#remember').val(false);
+	  }
+
+	  $('#remember').trigger(jQuery.Event('keypress', {which: 13}));
+	  console.log("update_remember"+String(itr++)+"\n");
+      }
+    </script>
+
     <div class="vertical">
       <div class="horizontal" id="horizontal">
+	<div class="remember">
+	  <input type="search" id="remember" value="false">
+	  <input type=checkbox id="chk_remember" onclick="update_remember();"/>
+	  <label for="remember">Remembered only</label>
+	</div>
 	<div id="filter-family">Filter on family :
           <select id="family" name="family">
             <option>*</option>
@@ -145,11 +182,11 @@
 	  </select>
 	</div>
 	<div class="search">Matching regexp :
-	  <input type="search" id="search">
+	  <input type="search" id="search"/>
 	</div>
       </div>
       <table id="instructions">
-	<thead class="header">
+	<thead class="header" id="top_header">
 	  <th colspan=3>Compatibility</th>
 	  <th>Format</th>
 	  <th>Abstract</th>
@@ -157,26 +194,51 @@
 	  <th>T Bits</br>DC Bits</th>
 	  <th colspan=3>Issue cycles</th>
 	  <th colspan=3>Latency cycles</th>
+	  <script type="text/javascript">
+	    if (local_storage) {
+		document.write("<th data-dynatable-column='remember'>Remember</th>");
+	    }
+	  </script>
 	</thead>
 	<thead class="header">
 	  <th colspan=7></th>
 	  <th class='family' data-dynatable-column="SH4.issue">SH1</th><th class='family' data-dynatable-column="SH2.issue">SH2</th><th class='family' data-dynatable-column="SH2E.issue">SH2E</th>
 	  <th class='family' data-dynatable-column="SH4.issue">SH1</th><th class='family' data-dynatable-column="SH2.issue">SH2</th><th class='family' data-dynatable-column="SH2E.issue">SH2E</th>
+	  <script type="text/javascript">
+	    if (local_storage) {
+               document.write("<th></th>");
+           }
+         </script>
 	</thead>
 	<thead class="header">
 	  <th colspan=7></th>
 	  <th class='family' data-dynatable-column="SH4.issue">SH2A</th><th class='family' data-dynatable-column="SH3.issue">SH3</th><th class='family' data-dynatable-column="SH3E.issue">SH3E</th>
 	  <th class='family' data-dynatable-column="SH4.issue">SH2A</th><th class='family' data-dynatable-column="SH3.issue">SH3</th><th class='family' data-dynatable-column="SH3E.issue">SH3E</th>
+	  <script type="text/javascript">
+	    if (local_storage) {
+               document.write("<th></th>");
+           }
+         </script>
 	</thead>
 	<thead class="header">
 	  <th colspan=7></th>
 	  <th class='family' data-dynatable-column="SH4.issue">SH4</th><th class='family' data-dynatable-column="SH4A.issue">SH4A</th><th class='family' data-dynatable-column="DSP.issue">DSP</th>
 	  <th class='family' data-dynatable-column="SH4.latency">SH4</th><th class='family' data-dynatable-column="SH4A.latency">SH4A</th><th class='family' data-dynatable-column="DSP.lantency">DSP</th>
+	  <script type="text/javascript">
+	    if (local_storage) {
+               document.write("<th></th>");
+           }
+         </script>
 	</thead>
 	<thead class="header">
 	  <th colspan=7></th>
 	  <th class='family' data-dynatable-column="J32.issue">J32</th><th class='family'></th><th class='family'></th>
 	  <th class='family' data-dynatable-column="J32.latency">J32</th><th class='family'></th><th class='family'></th>
+	  <script type="text/javascript">
+	    if (local_storage) {
+               document.write("<th></th>");
+           }
+         </script>
 	</thead>
 	<tbody></tbody>
       </table>
@@ -184,6 +246,37 @@
 
     <script type="text/javascript">
       var cur_opened = null;
+
+      document.getElementById("remember").style.display = "none";
+
+      function on_remember (rowIndex, format, event)
+      {
+	var r;
+
+	if (event.defaultPrevented === true)
+            return;
+
+        if (remember[format] === true)
+        {
+            delete remember[format];
+	    r = false;
+        } else {
+            remember[format] = true;
+	    r = true;
+        }
+
+        window.localStorage.setItem('remember', JSON.stringify(remember));
+
+	// It is faster to manipulate the element directly
+	var text = document.getElementById('remember' + rowIndex);
+        text.setAttribute('src', remember[format] === true ?
+			  'star_icon-full.png' :
+			  'star_icon-empty.png');
+
+	dynatable.settings.dataset.originalRecords[rowIndex].remember = r;
+
+	event.preventDefault();
+      }
 
       function on_mouse_click (rowIndex, event)
       {
@@ -349,15 +442,34 @@
           record.J32 ? record["J32.latency"] : '-'
         ];
         var group_start = "";
+
+	if (local_storage)
+	{
+	    memory = '<td rowspan=4><a onclick="on_remember(' + rowIndex + ', \'' + String(record.format) + '\', event);"><img id="remember' + rowIndex + '" height=32 width=32 src="star_icon-';
+	    if (remember[String(record.format)] === true)
+	    {
+		memory += "full";
+		record.remember = true;
+	    } else {
+		memory += "empty";
+		record.remember = false;
+	    }
+	    memory += '.png"></a></td>';
+	    colspan=14;
+	} else {
+	    memory = '';
+	    colspan=13;
+	}
+
         if (record.group != last_group)
         {
           last_group = record.group;
-          group_start = "<tr><td colspan=13><br/><b>" + record.group + "</b><br/></td></tr>";
+          group_start = "<tr><td colspan=" + colspan + "><br/><b>" + record.group + "</b><br/></td></tr>";
         }
 
         record.hex = binary2hex(record.code);
         if (record.hex) {
-	    hexCode = '<tr class="collapse" id="hex' + rowIndex + '" onmouseover="on_mouse_over('+ rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);"><td colspan=13><i><b>Short hexadecimal instruction code:</i></b>&nbsp;' + record.hex + '</td></tr>';
+	    hexCode = '<tr class="collapse" id="hex' + rowIndex + '" onmouseover="on_mouse_over('+ rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);"><td colspan=' + colspan + '><i><b>Short hexadecimal instruction code:</i></b>&nbsp;' + record.hex + '</td></tr>';
 	} else {
 	    hexcode = '';
 	}
@@ -369,7 +481,7 @@
           '<td rowspan=4><pre>' + record.code + '</pre></td>' +
           '<td rowspan=4>' + record.T + '</td>' +
 	  '<td>' + issue[0] + '</td><td>' + issue[1] + '</td><td>' + issue[2] + '</td><' +
-	  '<td>' + latency[0] + '</td><td>' + latency[1] + '</td><td>' + latency[2] + '</td></tr>' +
+	  '<td>' + latency[0] + '</td><td>' + latency[1] + '</td><td>' + latency[2] + '</td>' + memory + '</tr>' +
           '<tr id="line1.' + rowIndex + '" onmouseover="on_mouse_over(' + rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);">' +
 	    '<td class="compat">' + compat[3] + '</td><td class="compat">' + compat[4] + '</td><td class="compat">' + compat[5] + '</td>' +
 	    '<td>' + issue[3] + '</td><td>' + issue[4] + '</td><td>' + issue[5] + '</td>' +
@@ -383,16 +495,17 @@
             '<td>' + issue[9] + '</td><td>' + '</td><td></td>' +
             '<td>' + latency[9] + '</td><td>' + '</td><td></td>' +
           '</tr>' + hexCode +
-	  '<tr class="collapse" id="description' + rowIndex + '" onmouseover="on_mouse_over(' + rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);"><td colspan=13><i><b>Description</i></b><br/><pre>' + record.description + '</pre></td></tr>' +
-	  '<tr class="collapse" id="operation' + rowIndex + '" onmouseover="on_mouse_over(' + rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);"><td colspan=13><i><b>Operation</i></b><pre class="code">' + record.operation + '</pre></td></tr>';
+	  '<tr class="collapse" id="description' + rowIndex + '" onmouseover="on_mouse_over(' + rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);"><td colspan=' + colspan + '><i><b>Description</i></b><br/><pre>' + record.description + '</pre></td></tr>' +
+	  '<tr class="collapse" id="operation' + rowIndex + '" onmouseover="on_mouse_over(' + rowIndex + ');" onmouseout="on_mouse_out(' + rowIndex + ');" onclick="on_mouse_click(' + rowIndex + ', event);"><td colspan=' + colspan + '><i><b>Operation</i></b><pre class="code">' + record.operation + '</pre></td></tr>';
       }
 
       var last_query = "";
       var last_rex = null;
+      var dynatable = null;
 
       $.getJSON("insns.json",
         function(data) {
-        $('#instructions')
+        dynatable = $('#instructions')
           .bind('dynatable:init', function(e, dynatable) {
             dynatable.queries.functions['family'] = function(record, queryValue) {
               if (queryValue === '*') return true;
@@ -424,6 +537,14 @@
 
               return false;
             };
+	    dynatable.queries.functions['remember'] = function(record, queryValue) {
+              if (queryValue === "true")
+              {
+                if (record.remember) return true;
+                  return false;
+              }
+              return true;
+            };
           })
           .dynatable({
             features: {
@@ -437,9 +558,9 @@
               records: data.instructions
             },
             inputs: {
-              queries: $('#family, #search, #group')
+              queries: $('#family, #search, #group, #remember')
             }
-          });
+          }).data('dynatable');
         });
     </script>
   </body>
